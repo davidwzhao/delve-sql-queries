@@ -1,0 +1,20 @@
+def users = {
+    (1,parse_datetime["2020-11", "YYYY-mm"]); 
+    (2,parse_datetime["2020-08", "YYYY-mm"]);
+    (3,parse_datetime["2020-08", "YYYY-mm"]);
+    (1,parse_datetime["2020-10", "YYYY-mm"]);
+    (1,parse_datetime["2020-09", "YYYY-mm"]);
+    (10,parse_datetime["2020-10", "YYYY-mm"]);
+    (3,parse_datetime["2020-11", "YYYY-mm"]);
+    (20,parse_datetime["2020-08", "YYYY-mm"]);
+    (3,parse_datetime["2020-10", "YYYY-mm"])}
+
+// convert the data into months
+def months = m, u: exists(d: users(u, d) and m = datetime_month[d, "+00:00"])
+
+// count the number of users that show up in month - 1 and month
+// TODO: how to also show months where the retained user count is 0?
+def retained_users[month] = count[user: months(month - 1, user) and months(month, user)]
+
+// count the number of users that showed up in month - 1 but not month :(
+def churned_users[month] = count[user: months(month - 1, user) and not months(month, user)]

@@ -1,0 +1,30 @@
+ def salaries = {
+    ("develop", 11, 5200);
+    ("develop", 7, 4200);
+    ("develop", 9, 4500);
+    ("develop", 8, 6000);
+    ("develop", 10, 5200);
+    ("personnel", 5, 3500);
+    ("personnel", 2, 3900);
+    ("sales", 3, 4800);
+    ("sales", 1, 5000);
+    ("sales", 4, 4800)
+    }
+
+// part 1: find the average per department
+def salaries_with_avg(dept, empno, sal, sal_avg) = 
+    salaries(dept, empno, sal) and 
+
+    // mean grouped by dept
+    sal_avg = mean[salaries[dept]]
+
+// part 2: reorder so salary comes first for sort order purposes
+def salaries_first = d, s, e: salaries(d, e, s)
+
+// sort based on salary
+// TODO: handle ties properly, at the moment this will sort based on employee number
+def _salaries_ranked[dept] = 
+    reverse_sort[salaries_first[dept]]
+
+// reorder into the desired column order
+def salaries_ranked = d, e, s, r : _salaries_ranked(d, r, s, e)

@@ -1,0 +1,5 @@
+// this one might be difficult if we can't subtract datetimes?
+
+def interval = 
+    parse_datetime["2020-11-01 08:44", "YYYY-mm-dd HH:MM"] - 
+    parse_datetime["2020-11-01 06:34", "YYYY-mm-dd HH:MM"]

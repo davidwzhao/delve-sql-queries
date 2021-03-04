@@ -1,0 +1,32 @@
+def cash_flow = {
+    (parse_datetime["2020-11-01", "YYYY-mm-dd"],1000);
+    (parse_datetime["2020-11-02", "YYYY-mm-dd"],-800);
+    (parse_datetime["2020-11-03", "YYYY-mm-dd"],-500);
+    (parse_datetime["2020-11-04", "YYYY-mm-dd"],600);
+    (parse_datetime["2020-11-05", "YYYY-mm-dd"],600);
+    (parse_datetime["2020-11-06", "YYYY-mm-dd"],800);
+    (parse_datetime["2020-11-07", "YYYY-mm-dd"],-100);
+    (parse_datetime["2020-11-08", "YYYY-mm-dd"],100);
+    (parse_datetime["2020-11-09", "YYYY-mm-dd"],600);
+    (parse_datetime["2020-11-10", "YYYY-mm-dd"],200)}
+
+@inline def day[d] = datetime_day[d, "+00:00"]
+
+def sorted_cash_flow = sort[cash_flow]
+
+// start at day 1
+def cumulative_cash_flow(date, amount) = sorted_cash_flow(1, date, amount)
+
+// recursively compute each following day
+def cumulative_cash_flow(date, amount) = exists(previous, current, previous_date: 
+    amount = previous + current and
+
+    // today's cash flow
+    sorted_cash_flow(_, date, current) and
+
+    // cumulative cash flow up to yesterday
+    cumulative_cash_flow(previous_date, previous) and
+
+    // yesterday is today - 1
+    day[previous_date] = day[date] - 1
+    )

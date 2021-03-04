@@ -1,0 +1,16 @@
+def tree = {
+    (1, 2);
+    (2, 5);
+    (3, 5);
+    (4, 3);
+    (5, "null")
+    }
+
+// there is no child with n as the parent
+def result(n, "Leaf") = tree(n, _) and not exists child: tree(child, n)
+
+// there is a child with n as the parent, and n is not the root
+def result(n, "Inner") = tree(n, _) and exists(child: tree(child, n)) and not tree(n, "null")
+
+// the parent is null
+def result(n, "Root") = tree(n, "null")

@@ -1,0 +1,37 @@
+def signup_numbers = {
+    (parse_datetime["2020-11-01", "YYYY-mm-dd"],10);
+    (parse_datetime["2020-11-02", "YYYY-mm-dd"],20);
+    (parse_datetime["2020-11-03", "YYYY-mm-dd"],50);
+    (parse_datetime["2020-11-04", "YYYY-mm-dd"],36);
+    (parse_datetime["2020-11-05", "YYYY-mm-dd"],10);
+    (parse_datetime["2020-11-06", "YYYY-mm-dd"],302);
+    (parse_datetime["2020-11-07", "YYYY-mm-dd"],32);
+    (parse_datetime["2020-11-08", "YYYY-mm-dd"],23);
+    (parse_datetime["2020-11-09", "YYYY-mm-dd"],45);
+    (parse_datetime["2020-11-10", "YYYY-mm-dd"],22)}
+
+def interval = 7
+
+def sorted_signups = sort[signup_numbers]
+
+// recursively compute a moving sum
+// sum of the first interval
+def moving_sum(int, s) = interval(int) and (s = sum[id, date, signups: sorted_signups(id, date, signups) and id <= interval and id > 0])
+
+// recursively compute the moving sum for the remaining days
+def moving_sum(id, s) = exists(prev_sum, prev_first, current:
+    // moving sum of the previous day
+    moving_sum(id - 1, prev_sum) and 
+
+    // the first value of the previous interval
+    sorted_signups(id - interval, _, prev_first) and
+
+    // the current day
+    sorted_signups(id, _, current) and
+
+    // compute the sum!
+    s = prev_sum - prev_first + current
+    )
+
+// now just divide by interval for moving avg
+def moving_avg(id, avg) = exists int, s: interval(int) and moving_sum(id, s) and avg = s / int

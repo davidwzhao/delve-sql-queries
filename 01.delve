@@ -1,0 +1,25 @@
+def R = {
+    (1,parse_datetime["2020-11", "YYYY-mm"]); 
+    (2,parse_datetime["2020-08", "YYYY-mm"]);
+    (3,parse_datetime["2020-08", "YYYY-mm"]);
+    (1,parse_datetime["2020-09", "YYYY-mm"]);
+    (10,parse_datetime["2020-10", "YYYY-mm"]);
+    (3,parse_datetime["2020-11", "YYYY-mm"]);
+    (20,parse_datetime["2020-08", "YYYY-mm"]);
+    (3,parse_datetime["2020-10", "YYYY-mm"])}
+
+// count the active users per date
+def counts = date: count[id: R(id, date)]
+def sorted_counts = sort[counts]
+
+// i wanted to try doing an abstraction instead of defining in the head
+def perc_change = date, change: 
+    exists(id, before, after: 
+        // before is the count in the previous day
+        sorted_counts(id - 1, _, before), 
+
+        // after is the count of today
+        sorted_counts(id, date, after), 
+
+        // the change is the percentage difference
+        change = 100 * (after - before) / before)

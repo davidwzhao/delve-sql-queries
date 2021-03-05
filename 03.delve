@@ -18,3 +18,18 @@ def retained_users[month] = count[user: months(month - 1, user) and months(month
 
 // count the number of users that showed up in month - 1 but not month :(
 def churned_users[month] = count[user: months(month - 1, user) and not months(month, user)]
+
+// count the number of users that returned after 1 or more months away
+def returning_users[month] = count[user: 
+    exists(earlier_month: 
+        // the user accessed in some earlier month
+        months(earlier_month, user) and 
+
+        // and the month was before the immediately previous month
+        earlier_month < month - 1 and 
+
+        // and the user accessed in the current month
+        months(month, user) and 
+
+        // but not the immediately previous month
+        not months(month - 1, user))]

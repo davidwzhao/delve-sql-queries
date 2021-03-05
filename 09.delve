@@ -1,0 +1,22 @@
+def sessions = {
+    (1, 23);
+    (2, 453);
+    (3, 27);
+    (4, 123);
+    (5, 14);
+    (6, 21)
+}
+
+def bucket_size = 5
+
+// put all data into buckets
+def session_by_bucket = bucket, id: exists(len: sessions(id, len), bucket = floor_divide[len, bucket_size])
+
+// count the number of items in each bucket
+def buckets = bucket_text, c: 
+    exists(bucket: 
+        // count grouped by bucket
+        c = count[session_by_bucket[bucket]] and 
+
+        // generate the bucket label
+        bucket_text = concat[string[bucket * bucket_size], concat["-", string[(bucket + 1) * bucket_size]]])

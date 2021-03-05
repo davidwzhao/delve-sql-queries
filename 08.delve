@@ -19,12 +19,17 @@ def salaries_with_avg(dept, empno, sal, sal_avg) =
     sal_avg = mean[salaries[dept]]
 
 // part 2: reorder so salary comes first for sort order purposes
-def salaries_first = d, s, e: salaries(d, e, s)
+@inline def salaries_first = d, s, e: salaries(d, e, s)
 
 // sort based on salary
-// TODO: handle ties properly, at the moment this will sort based on employee number
 def _salaries_ranked[dept] = 
     reverse_sort[salaries_first[dept]]
 
+// parameterise salaries by department and salary
+@inline def salaries_by_dept[d, s] = (_d, _s, _r: _salaries_ranked(_d, _r, _s, _))[d, s]
+
 // reorder into the desired column order
-def salaries_ranked = d, e, s, r : _salaries_ranked(d, r, s, e)
+def salaries_ranked = d, e, s, r : (_salaries_ranked(d, _, s, e) and
+    // ensure that all employees with the same salary get the same rank
+    // by taking the Min rank over this combination
+    r = Min[salaries_by_dept[d, s]])

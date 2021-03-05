@@ -1,0 +1,14 @@
+def students = {
+    (1, "a");
+    (1, "b");
+    (1, "b");
+    (2, "b");
+    (3, "a")
+    }
+
+// implement the priority system, i.e., "b" has higher priority than "a"
+def students_prioritized("b", id) = students(id, "b")
+def students_prioritized("a", id) = students(id, "a") and not students(id, "b")
+
+// counts grouped by class
+def class_counts[class] = count[students_prioritized[class]]

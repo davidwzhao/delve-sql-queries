@@ -1,0 +1,18 @@
+def streams = {
+    ("NC", 34569);
+    ("SC", 33999);
+    ("CA", 98324);
+    ("MA", 19345)
+    }
+
+def threshold = 1000
+
+def close_streams(a, b) = exists a_num, b_num: 
+    streams(a, a_num) and 
+    streams(b, b_num) and 
+
+    // the numbers are within threshold of each other
+    abs[a_num - b_num] < threshold and
+
+    // ensures each pair shows up once
+    a < b
